@@ -1,6 +1,7 @@
 import inserirService from "../service/inserirService.js";
 import consultarService from "../service/consultarService.js";
 import alterarPorIdService from "../service/alterarPorIdService.js";
+import consultarPorIdService from "../service/consultarPorIdService.js";
 
 
 import { Router } from "express";
@@ -9,38 +10,53 @@ const endpoints = Router();
 
 
 // CREATE
-endpoints.post('/diario', async(req, resp) =>{
-    try{
+endpoints.post('/diario', async (req, resp) => {
+    try {
         let anotacao = req.body
 
         let id = await inserirService(anotacao);
 
         resp.send({
-            novoId:id
+            novoId: id
         })
-    }catch(err){
+    } catch (err) {
         resp.status(400).send({
-                erro:err.message
+            erro: err.message
         })
     }
 
 
-} )
+})
 
 // READ
 
-endpoints.get('/diario', async(req, resp) =>{
-    try{
+endpoints.get('/diario', async (req, resp) => {
+    try {
         let registros = await consultarService();
         resp.send(registros);
-    }catch(err){
+    } catch (err) {
         resp.status(400).send({
-            erro:err.message
+            erro: err.message
         })
     }
 
 
-} )
+})
+
+// READ BY ID
+endpoints.get('/diario/:id', async (req, resp) => {
+    try {
+        let idParaConsultar = Number(req.params.id);
+
+        let registros = await consultarPorIdService(idParaConsultar);
+        resp.send(registros);
+    }
+    catch (err) {
+        resp.status(400).send({
+            erro: err.message
+        })
+    }
+})
 
 // UPDATE
 endpoints.put('/diario/:id', async (req, resp) => {
@@ -52,7 +68,8 @@ endpoints.put('/diario/:id', async (req, resp) => {
         let registros = await alterarPorIdService(idParaAlterar, corpoParaAlterar);
         resp.send({
             idAlterar: idParaAlterar
-        })    }
+        })
+    }
     catch (err) {
         resp.status(400).send({
             erro: err.message
@@ -61,7 +78,7 @@ endpoints.put('/diario/:id', async (req, resp) => {
 })
 
 // DELETE
-endpoints.delete('/diario/:id', async(req, resp) => {
+endpoints.delete('/diario/:id', async (req, resp) => {
     try {
         let idParaDeletar = Number(req.params.id);
         await deletarPorIdService(idParaDeletar);
@@ -73,7 +90,8 @@ endpoints.delete('/diario/:id', async(req, resp) => {
         resp.status(400).send({
             erro: err.message
         })
-}})
+    }
+})
 
 
 export default endpoints;

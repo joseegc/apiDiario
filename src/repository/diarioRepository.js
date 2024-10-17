@@ -18,6 +18,7 @@ export async function consultar() {
         anotacao.id_anotacao AS idAnotacao,
         anotacao.txt_anotacao AS textoAnotacao,
         anotacao.dt_anotacao AS dataAnotacao,
+        autor.id_autor AS idAutor,
         autor.nm_autor AS autor
     FROM 
         tb_anotacao_diario anotacao
@@ -27,6 +28,25 @@ export async function consultar() {
 
     let [registros] = await con.query(comando);
     return registros;
+}
+
+export async function consultarPorId(idParaConsultar) {
+    const comando = `
+    SELECT
+        anotacao.id_anotacao AS idAnotacao,
+        anotacao.txt_anotacao AS textoAnotacao,
+        anotacao.dt_anotacao AS dataAnotacao,
+        autor.id_autor AS idAutor,
+        autor.nm_autor AS autor
+    FROM 
+        tb_anotacao_diario anotacao
+    JOIN 
+        tb_autor autor ON anotacao.id_autor = autor.id_autor
+     WHERE anotacao.id_anotacao = ?;
+        `
+
+    let [registros] = await con.query(comando,[idParaConsultar]);
+    return registros[0];
 }
 
 export async function alterarPorId(idParaAlterar, corpoParaAlterar) {
